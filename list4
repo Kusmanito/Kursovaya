@@ -1,0 +1,26 @@
+-- Триггер AFTER INSERT 
+CREATE TRIGGER after_certificate_insert
+AFTER INSERT ON certificates
+FOR EACH ROW
+BEGIN
+    UPDATE students 
+    SET achievement_count = (
+        SELECT COUNT(*) 
+        FROM certificates 
+        WHERE student_id = NEW.student_id
+    ) 
+    WHERE id = NEW.student_id;
+END;
+-- Триггер AFTER UPDATE
+CREATE TRIGGER after_certificate_delete
+AFTER DELETE ON certificates
+FOR EACH ROW
+BEGIN
+    UPDATE students 
+    SET achievement_count = (
+        SELECT COUNT(*) 
+        FROM certificates 
+        WHERE student_id = OLD.student_id
+    ) 
+    WHERE id = OLD.student_id;
+END;
